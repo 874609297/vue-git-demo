@@ -1,14 +1,14 @@
 <template>
     <div>
         <!-- 开头导航 -->
-        <van-nav-bar title="正在定位..." :right-text=RightText right-arrow  @click-left="onClickLeft"
+        <van-nav-bar :title="positionAddress ? positionAddress:'正在定位'" :right-text=RightText right-arrow  @click-left="onClickLeft"
         @click-right="onClickRight" style="background-color:rgb(0,166,124);color:white">
         <template #left>
         <van-icon name="search" size="18" color="white"/>
         </template>
         </van-nav-bar>
         <!-- 图片轮播 -->
-        <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white" >
+        <van-swipe class="my-swipe" :autoplay="3000" indicator-color="blue" >
         <van-swipe-item v-for="(item,index) in 2" :key="index">
         <van-grid :border="false">
         <van-grid-item :icon="'http://47.95.13.193:80/takeOutSystem-1.0-SNAPSHOT/'+item.photo" :text="item.name" v-for="(item,index) in listImg" :key="index" />
@@ -72,11 +72,46 @@ export default {
         Tag 
     },
     data() {
+        let self = this;
         return {
             text:'登录|注册',
             listImg:null,
             listShop:null,
             current: 0,
+            center: [121.59996, 31.197646],
+      lng: 0,
+      lat: 0,
+      positionAddress:"",
+      loaded: false,
+      plugin: [
+        {
+          pName: "Geolocation",
+          events: {
+            init(o) {
+              // o 是高德地图定位插件实例
+              o.getCurrentPosition((status, result) => {
+                console.log(result);
+                // console.log(result.addressComponent.township);
+                if (result && result.position) {
+                  var len = result.addressComponent.township.length;
+                  var index = result.formattedAddress.indexOf(
+                    result.addressComponent.township
+                  );
+                  self.positionAddress = result.formattedAddress.substring(
+                    index + len
+                  );
+                  // self.lng = result.position.lng;
+                  // self.lat = result.position.lat;
+                  // self.center = [self.lng, self.lat];
+                  self.loaded = true;
+                  self.$nextTick();
+                }
+              });
+            },
+          },
+        },
+      ],
+
         }
     },
     computed:{

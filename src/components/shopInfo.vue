@@ -9,50 +9,44 @@
             <van-icon name="arrow-left" color="white"/>
         </template>
         </van-nav-bar>
-        <div class="main">
-            <van-image
-            style="margin-right:10rem"
-            class="imgTop"
-            width="100"
-            height="100"
-            :src="'http://47.95.13.193:80/takeOutSystem-1.0-SNAPSHOT/'+shopinfo.photo"
-            />
-        </div>
-        <div style="width:100%;text-align: center;">
-            <p class="spanmain">
-                <van-tag color="#FFEF07">品牌</van-tag>
-                <b>{{shopinfo.name}}</b>
-            </p>
-            <p style="font-size:11px">
-                <span> {{shopinfo.score}}
-                 月售 {{shopinfo.sales}} 单
-                联想教育
-                约 {{shopinfo.deliveryTime}}分钟
-                距离 {{shopinfo.distance}}米
-                </span>
-            </p>
-            <p style="font-size:11px" @click="clickP">
-                <van-tag color="#FFEF07">首单</van-tag>
-                <span>新用户下单立减17元|不同其他</span>
-                <span> {{sortLength}} 个优惠</span>
-            </p>
-        </div>
-
+            <div style="width:100%;text-align: center;">
+                <van-image
+                class="imgTop"
+                width="100"
+                height="100"
+                :src="'http://47.95.13.193:80/takeOutSystem-1.0-SNAPSHOT/'+shopinfo.photo"
+                />
+                <p class="spanmain">
+                    <van-tag color="#FFEF07">品牌</van-tag>
+                    <b>{{shopinfo.name}}</b>
+                </p>
+                <p style="font-size:11px">
+                    <span> {{shopinfo.score}}
+                    月售 {{shopinfo.sales}} 单
+                    联想教育
+                    约 {{shopinfo.deliveryTime}}分钟
+                    距离 {{shopinfo.distance}}米
+                    </span>
+                </p>
+                <p style="font-size:11px" @click="clickP">
+                    <van-tag color="#FFEF07">首单</van-tag>
+                    <span>新用户下单立减17元|不同其他</span>
+                    <span> {{sortLength}} 个优惠</span>
+                </p>
+            </div>
 <!-- 优惠栏 -->
-        <van-action-sheet v-model="show"   title="优惠活动">
-            <van-cell-group style="text-align: center;">
-            <van-cell title="单元格" v-for="(item,index) in actions" :key="index">
-                 <template #title>
-                 <van-tag type="danger"> {{item.tag}} </van-tag>
-                 <span> {{item.contents}} </span>
-                 </template>
-            </van-cell>
-            </van-cell-group>
-        </van-action-sheet>
-
-        
-        <van-tabs v-model="active">
-        <van-tab title="点餐" style="">
+            <van-action-sheet v-model="show"   title="优惠活动">
+                <van-cell-group style="text-align: center;">
+                <van-cell title="单元格" v-for="(item,index) in actions" :key="index">
+                    <template #title>
+                    <van-tag type="danger"> {{item.tag}} </van-tag>
+                    <span> {{item.contents}} </span>
+                    </template>
+                </van-cell>
+                </van-cell-group>
+            </van-action-sheet>
+            <van-tabs v-model="active">
+            <van-tab title="点餐" style="">
             <van-row>
             <van-col span="6">
             <van-sidebar v-model="activeKey" @change="sidebarClick">
@@ -62,6 +56,7 @@
             <van-col span="18">
             <van-card
             v-for="(item,index) in fidinfo"
+            @click="addFood(item.name,$event)"
             :key="index"
             :price="price"
             :desc="item.info"
@@ -72,7 +67,7 @@
             <span>月售86份，好评率百分之百</span>
             </template>
             <template #footer>
-            <van-button size="mini" @click="addFood"><van-icon name="add-o" /></van-button>
+            <van-button size="mini"><van-icon name="add-o" /></van-button>
             </template>
             </van-card>
             </van-col>
@@ -90,9 +85,7 @@
                    </template>
             </van-submit-bar>
             </van-tab>
-
-
-        <van-tab title="评价">
+            <van-tab title="评价">
             <van-row>
             <van-col span="7" style="text-align: center;">
                 <b style="font-size:20px;color:orange"> {{shopinfo.score}} </b>
@@ -129,16 +122,16 @@
                 </template>
                 <template #desc	>
                     <div style="margin-left:2rem">
-                        <van-rate v-model="five" /><br>
+                        <van-rate v-model="item.score" /><br>
                         <span>{{item.comments}}</span><br>
                         <van-icon name="good-job" color="#F19D39" /><van-tag color="#ffe1e1" text-color="#ad0000">南瓜粥</van-tag>
                     </div>
                 </template>
                 </van-card>
             </van-tab>
-            <van-tab title="满意">
+            <van-tab title="满意" v-if="good">
                 <van-card
-                v-for="(item,index) in remark"
+                v-for="(item,index) in good"
                 :key="index"
                 >
                 <template #title>
@@ -163,9 +156,6 @@
             <van-tab title="不满意">内容 3</van-tab>
             </van-tabs>
         </van-tab>
-
-
-
         <van-tab title="商家">
             <b>配送信息</b><br>
             <van-tag color="#7232dd">联想外卖</van-tag>
@@ -179,19 +169,18 @@
             </p>
             <div class="gray"></div>
             <b>商家实景</b><br>
-
-            <van-row type="flex" justify="center">
-            <van-col span="6"><van-image
+            <van-row   gutter="20">
+            <van-col span="8"><van-image
             width="100"
             height="100"
             src="https://img01.yzcdn.cn/vant/cat.jpeg"
             /></van-col>
-            <van-col span="6"><van-image
+            <van-col span="8"><van-image
             width="100"
             height="100"
             src="https://img01.yzcdn.cn/vant/cat.jpeg"
             /></van-col>
-            <van-col span="6"><van-image
+            <van-col span="8"><van-image
             width="100"
             height="100"
             src="https://img01.yzcdn.cn/vant/cat.jpeg"
@@ -199,11 +188,20 @@
             </van-row>
         </van-tab>
         </van-tabs>
-
-
-
-        <van-action-sheet v-model="imgshow"/>
-
+        <van-action-sheet v-model="imgshow">
+        <template #default>
+            <div>
+                <div style="background-color:#F4F5F7">
+                    <span style="float:left">购物车</span>
+                    <span style="float:right" @click="EmptyMenu">清空</span>
+                </div>
+                <br>
+               <ul>
+                   <li v-for="(item,index) in foodMenu" :key="index"> {{item}} </li>
+               </ul>
+            </div>
+        </template>
+        </van-action-sheet>
     </div>
 </template>
 
@@ -226,27 +224,15 @@ export default {
             remark:null,
             five:5,
             good:[],
-            // 服务评分
-            //商品评分
-            // goodsScore:shopinfo.goodsScore,
-            imgshow:false
+            imgshow:false,
+            foodMenu:[],
+            isGood:[],
+            nGood:[]
         }
     },
     components:{
-        NavBar,
-        VanImage,
-        Tag,
-        SubmitBar ,
-        Button,
-        ActionSheet ,
-        Cell,
-        CellGroup,
-        Tab, 
-        Tabs,
-        Sidebar,
-        SidebarItem,
-        Card ,
-        Col, Row,
+        NavBar,VanImage,Tag,SubmitBar ,Button,ActionSheet ,Cell,
+        CellGroup,Tab, Tabs,Sidebar,SidebarItem,Card ,Col, Row,
         Rate
     },
     name:'shopinfo',
@@ -260,53 +246,67 @@ export default {
             this.$axios.get('/biz/queryInfoByShopId?shopId='+this.id).then(function(res){
                 that.shopinfo=res.data;
             });
-            this.$axios.get('/biz//querySpecialOfferByShopId?shopId='+this.id).then(function(res){
+            this.$axios.get('/biz//querySpecialOfferByShopId?shopId='+this.id).then(function(res){ 
                 that.actions=res.data;
                 that.sortLength=res.data.length;
-                })
+                });
             this.$axios.get('/biz/queryFoodCategory?id='+this.id).then(function(res){
-                that.foodSort=res.data
+                that.foodSort=res.data;
             });
             this.$axios.get('biz/queryFoodinfoByShopIdAndFoodCategoryId?shopId='+this.id+'&foodcategoryId='+this.fid).then(function(res){
-                that.fidinfo=res.data
-            })
+                that.fidinfo=res.data;
+            });
+            //评价
             this.$axios.get('/biz//queryCommentByShopId?shopId='+this.id).then(function(res){
-                that.remark=res.data
-                console.log(that.remark);
-            })
+                that.remark=res.data;
+                // for(let i=0;i<res.data.length;i++){
+                //     if(res.data.isGood==0){
+                //         isGood.push(res.data[i].isGood)
+                //     }else{
+                //         nGood.push(res.data[i].)
+                //     }
+                // }
+            });
         },
         clickP:function(){
-            this.show=true
+            this.show=true;
         },
         sidebarClick:function(index){
             this.fid=index+1;
             var that = this ;
             this.$axios.get('biz/queryFoodinfoByShopIdAndFoodCategoryId?shopId='+this.id+'&foodcategoryId='+this.fid).then(function(res){
-                that.fidinfo=res.data
+                that.fidinfo=res.data;
             })
         },
-        addFood:function(){
-            this.FullPrice+=9
+        addFood:function(name,event){
+            if(event.target.tagName.toLowerCase()=="button"){
+                this.FullPrice+=9;
+                this.foodMenu.push(name);
+            }
         },
         clickLeft:function(){
-            this.$router.go(-1)
+            this.$router.go(-1);
         },
         clickImg:function(){
-            this.imgshow=true
+            this.imgshow=true;
+        },
+        EmptyMenu(){
+            this.foodMenu=[];
+            this.FullPrice=0;
         }
     },
     computed:{
         phoneNumber:function(){
            
         },
-        // isgood:function(){
-        //     for(var i=0;i<this.remark.length;i++){
-        //         if(this.remark.isGood==1){
-        //             this.good.push(this.remark[i])
-        //         }
-        //     }
-        //     return this.good
-        // }
+        isgood:function(){
+            for(var i=0;i<this.remark.length;i++){
+                if(this.remark.isGood==1){
+                    this.good.push(this.remark[i]);
+                }
+            }
+            return this.good;
+        },
     }
     
 }
@@ -314,16 +314,14 @@ export default {
 
 <style lang="">
     .main{
-        width: 100%;
-        /* text-align: center; */
+        text-align: center;
         position: relative;
         height: 70px;
+        border: 1px solid red;
     }
     .imgTop{
-        position: absolute;
-        margin-top: -15px;
-        margin-left: 140px;
-        z-index: 1;      
+        margin-top: -20px;
+        z-index: 1;
     }
     .gray{
         width: 100%;

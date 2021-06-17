@@ -4,8 +4,8 @@
         <div class="title">
             <b>硅谷外卖</b>
         </div>
-        <van-tabs v-model="active">
-        <van-tab title="登录">
+        <van-tabs v-model="active" style="margin-top:50px">
+        <van-tab title="登录" style="text-align: center;">
             <van-cell-group>
             <van-field v-model="uid"  placeholder="请输入用户名" />
             <van-field v-model="upwd"  placeholder="请输入密码" :type="ftype">
@@ -14,9 +14,9 @@
                 </template>
             </van-field>
             </van-cell-group>
-            <van-button round type="primary" @click="LoginBtn" style="margin-left:45%">登录</van-button>
+            <van-button round type="primary" @click="LoginBtn" >登录</van-button>
         </van-tab>
-        <van-tab title="注册">
+        <van-tab title="注册" style="text-align: center;">
             <van-cell-group>
             <van-field v-model="uid"  placeholder="手机/邮箱/用户名" />
             <van-field v-model="upwd"  placeholder="请输入密码" />
